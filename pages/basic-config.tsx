@@ -22,7 +22,6 @@ const BasicConfig: React.FC = () => {
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     console.log("Form Submitted:", data);
     router.push("/rag");
-
   };
 
   return (
@@ -31,8 +30,8 @@ const BasicConfig: React.FC = () => {
       className="space-y-4 p-4 border border-black rounded-lg border-green-800"
     >
       {/* Header */}
-      <div style={{ backgroundColor: "#3C7069" }} className="text-white p-3">
-        <h1 className="text-lg font-bold rounded-xs">Basic Configuration</h1>
+      <div className="bg-[#3C7069] text-white p-3 rounded-t-lg">
+        <h1 className="text-lg font-bold">Basic Configuration</h1>
       </div>
 
       {/* App Name Field */}
