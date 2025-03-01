@@ -6,21 +6,21 @@ import { Shield, Settings, Workflow, Lock, Home } from "lucide-react";
 const Sidebar: React.FC= ()=>{
       const router = useRouter();
 
-     const menuItems = [
-       { name: "Overview", href: "/", icon: <Home size={20} /> },
-       {
-         name: "Basic Config",
-         href: "/basic-config",
-         icon: <Settings size={20} />,
-       },
-       { name: "RAG", href: "/rag", icon: <Shield size={20} /> },
-       { name: "WorkFlow", href: "/workflow", icon: <Workflow size={20} /> },
-       {
-         name: "Security Overview",
-         href: "/security",
-         icon: <Lock size={20} />,
-       },
-     ];
+    const menuItems = [
+      {
+        name: "Basic Config",
+        href: "/basic-config",
+        icon: <Settings size={20} />,
+      },
+      { name: "RAG", href: "/rag", icon: <Shield size={20} /> },
+      { name: "WorkFlow", href: "/workflow", icon: <Workflow size={20} /> },
+      {
+        name: "Security Overview",
+        href: "/security",
+        icon: <Lock size={20} />,
+      },
+    ];
+
     return (
       <aside className="w-64 h-screen bg-white text-black p-4 fixed top-0 left-0 border-r">
         <nav>
