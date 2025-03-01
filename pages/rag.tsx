@@ -1,5 +1,6 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 type FormValues = {
   knowledgebasename: string;
@@ -8,201 +9,233 @@ type FormValues = {
   embeddings: string;
   metrics: string;
   chunking: string;
-  vectordb:string;
+  vectordb: string;
 };
 
 const RAG: React.FC = () => {
   const router = useRouter();
+  const [configurations, setConfigurations] = useState<FormValues[]>([]);
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm<FormValues>();
+    reset,
+    formState: { errors, isValid },
+  } = useForm<FormValues>({ mode: "onChange" });
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log("Form Submitted", data);
-    router.push("/security");
+    setConfigurations([...configurations, data]); // Add to table list
+    reset(); // Reset form fields
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="space-y-4 p-4 border border-green-800 rounded-lg"
-    >
-      {/* Header */}
-      <div className="bg-[#3C7069] text-white p-3 rounded-t-lg">
-        <h1 className="text-lg font-bold">RAG Configuration</h1>
-      </div>
+    <div className="p-4 border border-green-800 rounded-lg">
+      {/* Form Section */}
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {/* Header */}
+        <div className="bg-[#3C7069] text-white p-3 rounded-t-lg">
+          <h1 className="text-lg font-bold">RAG Configuration</h1>
+        </div>
 
-      {/* Knowledge Base Name */}
-      <div className="flex flex-col">
-        <label htmlFor="knowledgebasename" className="font-medium">
-          Knowledge Base Name
-        </label>
-        <input
-          type="text"
-          id="knowledgebasename"
-          className="border p-2 rounded"
-          {...register("knowledgebasename", {
-            required: "Knowledge base name is required",
-          })}
-        />
-        {errors.knowledgebasename && (
-          <span className="text-red-500 text-sm">
-            {errors.knowledgebasename.message}
-          </span>
-        )}
-      </div>
-
-      {/* RAG Description */}
-      <div className="flex flex-col">
-        <label htmlFor="ragdescription" className="font-medium">
-          Description
-        </label>
-        <input
-          type="text"
-          id="ragdescription"
-          className="border p-2 rounded"
-          {...register("ragdescription", {
-            required: "RAG Description is required",
-          })}
-        />
-        {errors.ragdescription && (
-          <span className="text-red-500 text-sm">
-            {errors.ragdescription.message}
-          </span>
-        )}
-      </div>
-      <div className="grid grid-cols-2 gap-4">
-        {/* Pattern */}
+        {/* Knowledge Base Name */}
         <div className="flex flex-col">
-          <label htmlFor="pattern" className="font-medium">
-            Pattern
-          </label>
-          <select
-            id="pattern"
+          <label className="font-medium">Knowledge Base Name</label>
+          <input
+            type="text"
             className="border p-2 rounded"
-            {...register("pattern", { required: "Pattern is required" })}
-          >
-            <option value="">Select Pattern</option>
-            <option value="pattern1">Pattern 1</option>
-            <option value="pattern2">Pattern 2</option>
-          </select>
-          {errors.pattern && (
+            {...register("knowledgebasename", {
+              required: "Knowledge base name is required",
+            })}
+          />
+          {errors.knowledgebasename && (
             <span className="text-red-500 text-sm">
-              {errors.pattern.message}
+              {errors.knowledgebasename.message}
             </span>
           )}
         </div>
 
-        {/* Embeddings */}
+        {/* Description */}
         <div className="flex flex-col">
-          <label htmlFor="embeddings" className="font-medium">
-            Embeddings
-          </label>
-          <select
-            id="embeddings"
+          <label className="font-medium">Description</label>
+          <input
+            type="text"
             className="border p-2 rounded"
-            {...register("embeddings", { required: "Embeddings is required" })}
-          >
-            <option value="">Select Embeddings</option>
-            <option value="embedding1">Embedding 1</option>
-            <option value="embedding2">Embedding 2</option>
-          </select>
-          {errors.embeddings && (
+            {...register("ragdescription", {
+              required: "Description is required",
+            })}
+          />
+          {errors.ragdescription && (
             <span className="text-red-500 text-sm">
-              {errors.embeddings.message}
+              {errors.ragdescription.message}
             </span>
           )}
         </div>
 
-        {/* Metrics */}
+        {/* Grid Layout for Select Options */}
+        <div className="grid grid-cols-2 gap-4">
+          {[
+            {
+              label: "Pattern",
+              name: "pattern",
+              options: ["Pattern 1", "Pattern 2"],
+            },
+            {
+              label: "Embeddings",
+              name: "embeddings",
+              options: ["Embedding 1", "Embedding 2"],
+            },
+            {
+              label: "Metrics",
+              name: "metrics",
+              options: ["Metric 1", "Metric 2"],
+            },
+            {
+              label: "Chunking",
+              name: "chunking",
+              options: ["Chunking 1", "Chunking 2"],
+            },
+          ].map(({ label, name, options }) => (
+            <div key={name} className="flex flex-col">
+              <label className="font-medium">{label}</label>
+              <select
+                className="border p-2 rounded"
+                {...register(name as keyof FormValues, {
+                  required: `${label} is required`,
+                })}
+              >
+                <option value="">Select {label}</option>
+                {options.map((option) => (
+                  <option
+                    key={option}
+                    value={option.toLowerCase().replace(" ", "")}
+                  >
+                    {option}
+                  </option>
+                ))}
+              </select>
+              {errors[name as keyof FormValues] && (
+                <span className="text-red-500 text-sm">
+                  {(errors[name as keyof FormValues] as any)?.message}
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Vector DB */}
         <div className="flex flex-col">
-          <label htmlFor="metrics" className="font-medium">
-            Metrics
-          </label>
-          <select
-            id="metrics"
+          <label className="font-medium">Vector DB</label>
+          <input
+            type="text"
             className="border p-2 rounded"
-            {...register("metrics", { required: "Metrics is required" })}
-          >
-            <option value="">Select Metrics</option>
-            <option value="metric1">Metric 1</option>
-            <option value="metric2">Metric 2</option>
-          </select>
-          {errors.metrics && (
+            {...register("vectordb", { required: "Vector DB is required" })}
+          />
+          {errors.vectordb && (
             <span className="text-red-500 text-sm">
-              {errors.metrics.message}
+              {errors.vectordb.message}
             </span>
           )}
         </div>
 
-        {/* Chunking */}
-        <div className="flex flex-col">
-          <label htmlFor="chunking" className="font-medium">
-            Chunking
-          </label>
-          <select
-            id="chunking"
-            className="border p-2 rounded"
-            {...register("chunking", { required: "Chunking is required" })}
-          >
-            <option value="">Select Chunking</option>
-            <option value="chunking1">Chunking 1</option>
-            <option value="chunking2">Chunking 2</option>
-          </select>
-          {errors.chunking && (
-            <span className="text-red-500 text-sm">
-              {errors.chunking.message}
-            </span>
-          )}
-        </div>
-      </div>
-      <div className="flex flex-col">
-        <label htmlFor="knowledgebasename" className="font-medium">
-          Vector DB
-        </label>
-        <input
-          type="text"
-          id="vectordb"
-          className="border p-2 rounded"
-          {...register("vectordb", {
-            required: "Vector DB is required",
-          })}
-        />
-        {errors.vectordb && (
-          <span className="text-red-500 text-sm">
-            {errors.vectordb.message}
-          </span>
-        )}
-      </div>
-      <button
-        type="submit"
-        className="bg-[#3C7069] text-white px-4 py-2 rounded hover:bg-blue-600 transition"
-      >
-        Add Configuration
-      </button>
+        {/* Add Configuration Button */}
+        <button
+          type="submit"
+          className={`px-4 py-2 rounded transition ${
+            isValid
+              ? "bg-[#3C7069] text-white hover:bg-blue-600"
+              : "bg-gray-400 text-gray-700 cursor-not-allowed"
+          }`}
+          disabled={!isValid}
+        >
+          Add Configuration
+        </button>
+      </form>
 
-      {/* Buttons */}
+      {/* Configuration Table */}
+      {configurations.length > 0 && (
+        <div className="mt-6">
+          <h2 className="text-lg font-semibold mb-3">Added Configurations:</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse border border-gray-300">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="border border-gray-300 px-4 py-2">#</th>
+                  <th className="border border-gray-300 px-4 py-2">
+                    Knowledge Base
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2">
+                    Description
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2">Pattern</th>
+                  <th className="border border-gray-300 px-4 py-2">
+                    Embeddings
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2">Metrics</th>
+                  <th className="border border-gray-300 px-4 py-2">Chunking</th>
+                  <th className="border border-gray-300 px-4 py-2">
+                    Vector DB
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {configurations.map((config, index) => (
+                  <tr key={index} className="text-center">
+                    <td className="border border-gray-300 px-4 py-2">
+                      {index + 1}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {config.knowledgebasename}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {config.ragdescription}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {config.pattern}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {config.embeddings}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {config.metrics}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {config.chunking}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {config.vectordb}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* Navigation Buttons */}
       <div className="flex justify-between mt-4">
         <button
           type="button"
           className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition"
-          onClick={() => router.push("/basic-config")} // Go back
+          onClick={() => router.push("/basic-config")}
         >
           Previous
         </button>
 
         <button
           type="button"
-          className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition"
-          onClick={() => router.push("/workflow")} // Go to next page (change route as needed)
+          className={`px-4 py-2 rounded transition ${
+            configurations.length > 0
+              ? "bg-yellow-500 text-white hover:bg-yellow-600"
+              : "bg-gray-400 text-gray-700 cursor-not-allowed"
+          }`}
+          onClick={() => router.push("/workflow")}
+          disabled={configurations.length === 0}
         >
           Next
         </button>
       </div>
-    </form>
+    </div>
   );
 };
 
