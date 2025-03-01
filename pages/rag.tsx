@@ -24,10 +24,11 @@ const RAG: React.FC = () => {
   } = useForm<FormValues>({ mode: "onChange" });
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    setConfigurations([...configurations, data]); // Add to table list
-    reset(); // Reset form fields
+    const updatedConfigurations = [...configurations, data];
+    setConfigurations(updatedConfigurations);
+    localStorage.setItem("ragConfig", JSON.stringify(updatedConfigurations)); // Store data
+    reset();
   };
-
   return (
     <div className="p-4 border border-green-800 rounded-lg ">
       {/* Form Section */}

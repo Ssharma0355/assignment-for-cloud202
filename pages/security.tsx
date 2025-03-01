@@ -1,6 +1,17 @@
 import { useRouter } from "next/router";
 const Security: React.FC = () => {
     const router = useRouter();
+
+
+    const handleSubmit = () => {
+    const basicConfig = JSON.parse(localStorage.getItem("basicConfig") || "{}");
+    const ragConfig = JSON.parse(localStorage.getItem("ragConfig") || "[]");
+
+    console.log("Basic Config:", basicConfig);
+    console.log("RAG Config:", ragConfig);
+
+    router.push("/security");
+  };
   return (
     <div className="p-4 border border-green-800 rounded-lg ">
       {/* Form Section */}
@@ -25,7 +36,7 @@ const Security: React.FC = () => {
           <button
             type="button"
             className={"bg-[#3C7069] px-4 py-2 rounded text-white "}
-            onClick={() => router.push("/security")}
+            onClick={handleSubmit}
           >
             Submit
           </button>

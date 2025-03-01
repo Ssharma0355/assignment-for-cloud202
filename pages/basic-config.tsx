@@ -19,10 +19,11 @@ const BasicConfig: React.FC = () => {
 
   const [openModal, setOpenModal] = useState<string | null>(null);
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log("Form Submitted:", data);
-    router.push("/rag");
-  };
+ const onSubmit: SubmitHandler<FormValues> = (data) => {
+   console.log("Form Submitted:", data);
+   localStorage.setItem("basicConfig", JSON.stringify(data)); // Store data
+   router.push("/rag");
+ };
 
   return (
     <form
