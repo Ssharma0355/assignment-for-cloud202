@@ -13,7 +13,9 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
-  overflow: hidden;
+  overflow-y: auto;
+    /* Allows scrolling */
+    scroll-behavior: smooth;
 }
 .modal-css{
   margin-top: -3rem !important;

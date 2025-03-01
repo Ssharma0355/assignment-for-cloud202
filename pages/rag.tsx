@@ -29,7 +29,7 @@ const RAG: React.FC = () => {
   };
 
   return (
-    <div className="p-4 border border-green-800 rounded-lg">
+    <div className="p-4 border border-green-800 rounded-lg ">
       {/* Form Section */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Header */}
