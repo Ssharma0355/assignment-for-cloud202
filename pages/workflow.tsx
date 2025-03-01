@@ -28,6 +28,7 @@ const WorkFlow: React.FC = () => {
             type="button"
             className={"bg-[#3C7069] px-4 py-2 rounded text-white "}
             onClick={() => router.push("/security")}
+            
           >
             Next
           </button>
